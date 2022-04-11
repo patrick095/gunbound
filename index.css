@@ -29,15 +29,18 @@
 }
 
 #wind-arrow {
-  background: white;
   height: 50px;
-  width: 6px;
-  left: 47px;
+  width: 50px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  left: 27px;
   bottom: 15px;
   position: absolute;
 }
 
 #wind-arrow-tip {
+  display: none;
   background: white;
   height: 10px;
   width: 10px;
@@ -187,9 +190,38 @@ p {
 
 #projectile {
   background: white;
-  height: 6px;
-  width: 6px;
+  height: 20px;
+  width: 20px;
+  border-radius: 50px;
   position: absolute;
   display: block;
-  border-radius: 2px;
+}
+
+.power-bar-container {
+  height: 50px;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  width: 800px;
+}
+
+.power-bar {
+  background: #84d0fc;
+  padding: 5px;
+  border: 2px solid #258dc9;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  position: relative;
+  color: aliceblue;
+}
+
+.power-bar-fill {
+  background: #11a035;
+  height: 100%;
+  width: 1%;
+  position: absolute;
+  top: 0;
+  left: 0;
 }

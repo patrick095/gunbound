@@ -9,11 +9,10 @@ class Projectile {
     this.game = this.gun.tank.game
     this.windYVelocity = Math.sin(this.game.windAngle * Math.PI/180) * this.game.windSpeed
     this.windXVelocity = Math.cos(this.game.windAngle * Math.PI/180) * this.game.windSpeed
-    debugger
     this.yVelocity = Math.sin(this.angle) * velocity + this.windYVelocity
     this.xVelocity = Math.cos(this.angle) * velocity + this.windXVelocity
     this.absLeft = this.gun.absLeft + this.relLeft
-    this.absRight = this.absLeft + 6
+    this.absRight = this.absLeft + 20
   }
 
   fire() {
@@ -25,7 +24,7 @@ class Projectile {
     this.bottom += (this.yVelocity - gravity)
     this.relLeft += this.xVelocity
     this.absLeft = this.gun.absLeft + this.relLeft
-    this.absRight = this.absLeft + 6
+    this.absRight = this.absLeft + 20
   }
 
   checkCollision() {

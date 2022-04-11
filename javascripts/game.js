@@ -1,13 +1,20 @@
 class Game {
   constructor () {
+    this.maxPower = 20
     this.turn = 0
     this.appendTanks()
     this.tanks = [new Tank(this, 1), new Tank(this, 2)]
     this.command = this.commandTank.bind(this)
+    this.startPowerBar = this.powerBar.bind(this)
+    this.stopPower = this.stopPowerBar.bind(this)
+    this.powerBarInterval = null
     this.counter = 20
+    this.power = 0
     this.timer = this.countdown.call(this)
     this.windAngle = Math.round(Math.random() * 360)
     this.windSpeed = (Math.round(Math.random() * 5))
+    this.spaceBarPressed = false
+    this.playerTurn = null
   }
 
   startGame () {
@@ -38,7 +45,9 @@ class Game {
   }
 
   newTurn() {
+    this.removeEventListnen()
     this.timer
+    this.power = 0
     $('p.angle').html(`0 &#176`)
     var player = this.turn % 2 + 1
     $('p.player').html(`Player ${player}'s Turn`)
@@ -53,7 +62,12 @@ class Game {
       $('.angle').css({background: "purple"})
       $('.timer').css({background: "purple"})
     }
+    $('.power-bar-fill').css({width: `${(this.power*100)/this.maxPower}%`})
     $(document).on("keydown", this.command)
+    $(document).on('keypress', this.startPowerBar)
+    $(document).on('keyup', this.stopPower)
+
+    this.playerTurn = this.tanks[player - 1]
   }
 
   countdown() {
@@ -77,25 +91,45 @@ class Game {
     }
 
   commandTank(e) {
-    var tank
-    if (this.turn % 2 === 0) {
-      tank = this.tanks[0]
-    } else {
-      tank = this.tanks[1]
+    if (e.which === 37) {
+      this.playerTurn.moveTankLeft()
+    } else if (e.which === 39) {
+      this.playerTurn.moveTankRight()
+    } else if (e.which === 38) {
+      this.playerTurn.gun.rotateGunRight()
+    } else if (e.which === 40) {
+      this.playerTurn.gun.rotateGunLeft()
     }
+  }
+
+  powerBar(e) {
+    if (e.which === 32 && !this.spaceBarPressed) {
+      this.spaceBarPressed = true
+      this.power = 0
+      this.powerBarInterval = setInterval(() => {
+        if (this.power < this.maxPower && this.power >= 0) {
+          this.power += 1;
+          $('.power-bar-fill').css({width: `${(this.power*100)/this.maxPower}%`})
+        }
+      }, 40)
+      
+    }
+  }
+
+  stopPowerBar(e) {
 
     if (e.which === 32) {
-      $(document).off("keydown", this.command)
-      tank.gun.shoot()
-    } else if (e.which === 37) {
-      tank.moveTankLeft()
-    } else if (e.which === 39) {
-      tank.moveTankRight()
-    } else if (e.which === 38) {
-      tank.gun.rotateGunRight()
-    } else if (e.which === 40) {
-      tank.gun.rotateGunLeft()
+      this.spaceBarPressed = false
+      clearInterval(this.powerBarInterval)
+      this.playerTurn.gun.shoot(this.power)
+      this.removeEventListnen()
     }
+  }
+
+  removeEventListnen() {
+    $(document).off("keydown", this.command)
+    $(document).off('keypress', this.startPowerBar)
+    $(document).off('keyup', this.stopPower)
   }
 
   endGame() {
